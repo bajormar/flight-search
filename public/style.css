@@ -59,7 +59,7 @@ body, html {
     padding: 5px 10px;
 }
 
-.form-block input {
+.form-block input, .form-block select {
     width: 60%;
     display: block;
     float: right;

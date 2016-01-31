@@ -19,12 +19,16 @@
 		<div class="left-side">
 			<div class="form-block">
 				<label>From</label>
-				<input ng-model="flightSearchCtrl.from"/>
+				<select name="mySelect" id="mySelect"
+						ng-options="airport.name for airport in flightSearchCtrl.airports track by airport.iataCode"
+						ng-model="flightSearchCtrl.from"></select>
 			</div>
 
 			<div class="form-block">
 				<label>To</label>
-				<input ng-model="flightSearchCtrl.to"/>
+				<select name="mySelect" id="mySelect2"
+						ng-options="airport.name for airport in flightSearchCtrl.airports track by airport.iataCode"
+						ng-model="flightSearchCtrl.to"></select>
 			</div>
 
 			<div class="form-block">
@@ -39,7 +43,10 @@
 			</div>
 
 
-			<div class="direct-flight" ng-if="flightSearchCtrl.flightInfo">
+			<div class="direct-flight" ng-if="flightSearchCtrl.flightInfo && !flightSearchCtrl.flightInfo.fares[0]">
+				Direct flight not available
+			</div>
+			<div class="direct-flight" ng-if="flightSearchCtrl.flightInfo.fares[0]">
 				<div>Skrydis</div>
 				<div>Is: {{flightSearchCtrl.flightInfo.fares[0].outbound.departureAirport.name}} ({{flightSearchCtrl.flightInfo.fares[0].outbound.departureAirport.iataCode}})</div>
 				<div>I: {{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalAirport.name}} ({{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalAirport.iataCode}})</div>
