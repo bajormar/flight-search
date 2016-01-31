@@ -14,6 +14,11 @@ body, html {
     position: relative;
 }
 
+/*html {
+    background-image: url("http://newmedia.thomson.co.uk/live/vol/0/fc22c17b5c6896cf6dfa04be787a7673f1e4f1e7/1080x608/web/EUROPEMEDITERRANEANSPAINCON_ESPGRANCANARIAAMADORES.jpg");
+    background-size: cover;
+}*/
+
 .page-header {
     color: white;
     width: 100%;

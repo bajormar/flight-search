@@ -18,22 +18,25 @@
 	
 	app.get('/api/flights/from/:from/to/:to/date/:date', function(req, res) {
         var request = require('request');
-		request('https://www.ryanair.com/en/api/2/flights/from/' + req.params.from + '/to/' + req.params.to + '/' + req.params.date + '/' + req.params.date + '/250/unique/?limit=15&offset-0', function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				res.send(body);
-			 }
-		})
+        request('https://api.ryanair.com/farefinder/3/oneWayFares?&departureAirportIataCode=' + req.params.from + '&arrivalAirportIataCode=' + req.params.to + '&language=lt&limit=5&offset=0&outboundDepartureDateFrom=' + req.params.date + '&outboundDepartureDateTo=' + req.params.date, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                res.send(body);
+             }
+        })
     });
-	
+
+
 	app.get('/api/flightsInfo', function(req, res) {
         var request = require('request');
-		request('https://www.ryanair.com/en/api/2/forms/flight-booking-selector/', function (error, response, body) {
+		request('https://api.ryanair.com/aggregate/3/common?embedded=airports&market=lt-lt', function (error, response, body) {
 			if (!error && response.statusCode == 200) {
 				res.send(body);
 			 }
 		})
     });
-	
+
+    https://api.ryanair.com/farefinder/3/oneWayFares?&departureAirportIataCode=VNO&language=lt&limit=5&offset=0&outboundDepartureDateFrom=2016-01-29&outboundDepartureDateTo=2017-03-25
+
 	app.get('*', function(req, res) {
         res.sendfile('public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });

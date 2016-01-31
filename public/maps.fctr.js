@@ -34,7 +34,7 @@
             markers.push(marker)
         }
 
-        function drawFightPath(path) {
+        function drawFlightPath(path) {
             var path = new google.maps.Polyline({
                 path: path,
                 geodesic: true,
@@ -73,7 +73,7 @@
         return {
             getMap: getMap,
             addMarker: addMarker,
-            drawFightPath: drawFightPath,
+            drawFlightPath: drawFlightPath,
             clearMap: clearMap
         }
     });

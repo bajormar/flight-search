@@ -16,21 +16,22 @@
     	    FlightSearchFactory.getFlightPriceInfo(ctrl.from, ctrl.to, ctrl.date).then(function(response) {
     			ctrl.flightInfo = response.data;
 
-    			MapsFactory.addMarker(findAirportByIATACode(ctrl.from).latitude, findAirportByIATACode(ctrl.from).longitude, ctrl.from);
-                MapsFactory.addMarker(findAirportByIATACode(ctrl.to).latitude, findAirportByIATACode(ctrl.to).longitude, ctrl.to);
+    			MapsFactory.addMarker(findAirportByIATACode(ctrl.from).coordinates.latitude, findAirportByIATACode(ctrl.from).coordinates.longitude, findCityNameByIATACode(ctrl.from));
+                MapsFactory.addMarker(findAirportByIATACode(ctrl.to).coordinates.latitude, findAirportByIATACode(ctrl.to).coordinates.longitude, findCityNameByIATACode(ctrl.to));
 
-                MapsFactory.drawFightPath([
-                    {lat: findAirportByIATACode(ctrl.from).latitude, lng: findAirportByIATACode(ctrl.from).longitude},
-                    {lat: findAirportByIATACode(ctrl.to).latitude, lng: findAirportByIATACode(ctrl.to).longitude}
+                MapsFactory.drawFlightPath([
+                    {lat: findAirportByIATACode(ctrl.from).coordinates.latitude, lng: findAirportByIATACode(ctrl.from).coordinates.longitude},
+                    {lat: findAirportByIATACode(ctrl.to).coordinates.latitude, lng: findAirportByIATACode(ctrl.to).coordinates.longitude}
                 ]);
     		});
     	}
 
-    	var routes, airports;
+    	var airports;
 
         FlightSearchFactory.getFlightsInfo().then(function(response) {
-            routes = response.data.routes;
+
             airports = response.data.airports;
+
             ctrl.airports = response.data.airports;
         });
 
@@ -40,82 +41,70 @@
 
     		ctrl.routes = [];
 
-    		var fromRoutes = routes[ctrl.from];
-    		var toRoutes = routes[ctrl.to];
+    		var fromRoutes = findAirportByIATACode(ctrl.from).routes;
+    		var toRoutes = findAirportByIATACode(ctrl.to).routes;
 
-    		angular.forEach(fromRoutes, function(fromRoute) {
+    		var connectedRoutes = [];
+
+            angular.forEach(fromRoutes, function(fromRoute) {
     			angular.forEach(toRoutes, function(toRoute) {
-
-    				if(fromRoute == toRoute) {
-    					FlightSearchFactory.getFlightPriceInfo(ctrl.from, fromRoute, ctrl.date).then(function(response1) {
-    						if(!response1.data.flights[0]) {
-    							return;
-    						}
-
-    						FlightSearchFactory.getFlightPriceInfo(fromRoute, ctrl.to, ctrl.date).then(function(response2) {
-    							if(!response2.data.flights[0]) {
-
-    								FlightSearchFactory.getFlightPriceInfo(fromRoute, ctrl.to, new Date(ctrl.date.getFullYear(), ctrl.date.getMonth(), ctrl.date.getDate() + 1)).then(function(response3) {
-    									if(!response3.data.flights[0]) {
-    										return;
-    									}
-    									ctrl.routes.push({
-    										route: findCityNameByIATACode(ctrl.from) + " --> " + findCityNameByIATACode(fromRoute) + " --> " + findCityNameByIATACode(ctrl.to),
-    										date1: $filter('date')(response1.data.flights[0].outbound.dateFrom, 'yyyy-MM-dd HH:mm') + " --> " + $filter('date')(response1.data.flights[0].outbound.dateTo, 'yyyy-MM-dd HH:mm'),
-    										price1: response1.data.flights[0].summary.price.value + response1.data.flights[0].summary.price.currencySymbol,
-    										date2: $filter('date')(response3.data.flights[0].outbound.dateFrom, 'yyyy-MM-dd HH:mm') + " --> " + $filter('date')(response3.data.flights[0].outbound.dateTo, 'yyyy-MM-dd HH:mm'),
-    										price2: response3.data.flights[0].summary.price.value + response3.data.flights[0].summary.price.currencySymbol
-    									});
-
-    									MapsFactory.addMarker(findAirportByIATACode(ctrl.from).latitude, findAirportByIATACode(ctrl.from).longitude, ctrl.from);
-    									MapsFactory.addMarker(findAirportByIATACode(fromRoute).latitude, findAirportByIATACode(fromRoute).longitude, fromRoute);
-    									MapsFactory.addMarker(findAirportByIATACode(ctrl.to).latitude, findAirportByIATACode(ctrl.to).longitude, ctrl.to);
-
-                                        MapsFactory.drawFightPath([
-                                            {lat: findAirportByIATACode(ctrl.from).latitude, lng: findAirportByIATACode(ctrl.from).longitude},
-                                            {lat: findAirportByIATACode(fromRoute).latitude, lng: findAirportByIATACode(fromRoute).longitude},
-                                            {lat: findAirportByIATACode(ctrl.to).latitude, lng: findAirportByIATACode(ctrl.to).longitude}
-                                        ]);
-
-    									return;
-    								})
-    								return;
-    							}
-    							ctrl.routes.push({
-    								route: findCityNameByIATACode(ctrl.from) + " --> " + findCityNameByIATACode(fromRoute) + " --> " + findCityNameByIATACode(ctrl.to),
-    								date1: $filter('date')(response1.data.flights[0].outbound.dateFrom, 'yyyy-MM-dd HH:mm') + " --> " + $filter('date')(response1.data.flights[0].outbound.dateTo, 'yyyy-MM-dd HH:mm'),
-    								price1: response1.data.flights[0].summary.price.value + response1.data.flights[0].summary.price.currencySymbol,
-    								date2: $filter('date')(response2.data.flights[0].outbound.dateFrom, 'yyyy-MM-dd HH:mm') + " --> " + $filter('date')(response2.data.flights[0].outbound.dateTo, 'yyyy-MM-dd HH:mm'),
-    								price2: response2.data.flights[0].summary.price.value + response2.data.flights[0].summary.price.currencySymbol
-    							});
-
-    							MapsFactory.addMarker(findAirportByIATACode(ctrl.from).latitude, findAirportByIATACode(ctrl.from).longitude, ctrl.from);
-                                MapsFactory.addMarker(findAirportByIATACode(fromRoute).latitude, findAirportByIATACode(fromRoute).longitude, fromRoute);
-                                MapsFactory.addMarker(findAirportByIATACode(ctrl.to).latitude, findAirportByIATACode(ctrl.to).longitude, ctrl.to);
-
-                                MapsFactory.drawFightPath([
-                                    {lat: findAirportByIATACode(ctrl.from).latitude, lng: findAirportByIATACode(ctrl.from).longitude},
-                                    {lat: findAirportByIATACode(fromRoute).latitude, lng: findAirportByIATACode(fromRoute).longitude},
-                                    {lat: findAirportByIATACode(ctrl.to).latitude, lng: findAirportByIATACode(ctrl.to).longitude}
-                                ]);
-
-    						})
-    					})
-
-    				}
+    			    if(fromRoute === toRoute && fromRoute.indexOf('airport:') !== -1) {
+    			        connectedRoutes.push(fromRoute.substring('airport:'.length));
+    			    }
     			})
-    		})
+            })
+
+            angular.forEach(connectedRoutes, function(route) {
+
+                FlightSearchFactory.getFlightPriceInfo(ctrl.from, route, ctrl.date).then(function(response1) {
+                    if(!response1.data.fares[0]) {
+                        return;
+                    }
+
+                    FlightSearchFactory.getFlightPriceInfo(route, ctrl.to, ctrl.date).then(function(response2) {
+                        if(response2.data.fares[0]) {
+                            addToResultRoutes(route, response1, response2);
+                            return;
+                        }
+
+                        FlightSearchFactory.getFlightPriceInfo(route, ctrl.to, new Date(ctrl.date.getFullYear(), ctrl.date.getMonth(), ctrl.date.getDate() + 1)).then(function(response3) {
+                            if(!response3.data.fares[0]) {
+                                return;
+                            }
+
+                            addToResultRoutes(route, response1, response3);
+                        })
+                        return;
+                    })
+                })
+            })
     	}
 
+    	function addToResultRoutes(route, response1, response2) {
+
+            ctrl.routes.push({
+                route: findCityNameByIATACode(ctrl.from) + " --> " + findCityNameByIATACode(route) + " --> " + findCityNameByIATACode(ctrl.to),
+                date1: formatDate(response1.data.fares[0].outbound.departureDate) + " --> " + formatDate(response1.data.fares[0].outbound.arrivalDate),
+                price1: response1.data.fares[0].summary.price.value + response1.data.fares[0].summary.price.currencySymbol,
+                date2: formatDate(response2.data.fares[0].outbound.departureDate) + " --> " + formatDate(response2.data.fares[0].outbound.arrivalDate),
+                price2: response2.data.fares[0].summary.price.value + response2.data.fares[0].summary.price.currencySymbol
+            });
+
+            MapsFactory.addMarker(findAirportByIATACode(ctrl.from).coordinates.latitude, findAirportByIATACode(ctrl.from).coordinates.longitude, findCityNameByIATACode(ctrl.from));
+            MapsFactory.addMarker(findAirportByIATACode(route).coordinates.latitude, findAirportByIATACode(route).coordinates.longitude, findCityNameByIATACode(route));
+            MapsFactory.addMarker(findAirportByIATACode(ctrl.to).coordinates.latitude, findAirportByIATACode(ctrl.to).coordinates.longitude, findCityNameByIATACode(ctrl.to));
+
+            MapsFactory.drawFlightPath([
+                {lat: findAirportByIATACode(ctrl.from).coordinates.latitude, lng: findAirportByIATACode(ctrl.from).coordinates.longitude},
+                {lat: findAirportByIATACode(route).coordinates.latitude, lng: findAirportByIATACode(route).coordinates.longitude},
+                {lat: findAirportByIATACode(ctrl.to).coordinates.latitude, lng: findAirportByIATACode(ctrl.to).coordinates.longitude}
+            ]);
+
+            return;
+        }
+
     	function findCityNameByIATACode(iataCode){
-    		for (var i = 0, len = airports.length; i < len; i++) {
-    		  if (airports[i].iataCode === iataCode) {
-    			return airports[i].name + " (" + airports[i].country.name + ")";
-    		  }
-    		}
-
-    		return "notFound";
-
+    		return findAirportByIATACode().name;
     	}
 
     	function findAirportByIATACode(iataCode){
@@ -126,6 +115,10 @@
     		}
 
     		return "notFound";
+    	}
+
+    	function formatDate(date) {
+    	    return $filter('date')(date, 'yyyy-MM-dd HH:mm', 'UTC')
     	}
     });
 }());
