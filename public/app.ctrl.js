@@ -5,6 +5,7 @@
         var ctrl = this;
 
     	ctrl.date = new Date(2016, 06, 19);
+    	ctrl.minimumHoursBetweenFlights = 2;
     	ctrl.flightInfo;
 
     	ctrl.fetchInfo = function() {
@@ -73,17 +74,24 @@
                     }
 
                     FlightSearchFactory.getFlightPriceInfo(route, ctrl.to.iataCode, ctrl.date).then(function(response2) {
-                        if(response2.data.fares[0]) {
+                        if(response2.data.fares[0] && isEnoughTimeBetweenFlights(
+                           new Date(response1.data.fares[0].outbound.arrivalDate),
+                           new Date(response2.data.fares[0].outbound.departureDate)
+                           )) {
+
                             addToResultRoutes(route, response1, response2);
                             return;
                         }
 
                         FlightSearchFactory.getFlightPriceInfo(route, ctrl.to.iataCode, new Date(ctrl.date.getFullYear(), ctrl.date.getMonth(), ctrl.date.getDate() + 1)).then(function(response3) {
-                            if(!response3.data.fares[0]) {
+                            if(response3.data.fares[0] && isEnoughTimeBetweenFlights(
+                               new Date(response1.data.fares[0].outbound.arrivalDate),
+                               new Date(response3.data.fares[0].outbound.departureDate)
+                               )) {
+
+                                addToResultRoutes(route, response1, response3);
                                 return;
                             }
-
-                            addToResultRoutes(route, response1, response3);
                         })
                         return;
                     })
@@ -130,6 +138,10 @@
 
     	function formatDate(date) {
     	    return $filter('date')(date, 'yyyy-MM-dd HH:mm')
+    	}
+
+    	function isEnoughTimeBetweenFlights(arrivalDate, departureDate) {
+    	    return departureDate - arrivalDate > ctrl.minimumHoursBetweenFlights * 3600000; //hours to miliseconds
     	}
     });
 }());
