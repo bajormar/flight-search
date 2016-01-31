@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="flightSearchApp">
+<head>
+	<link rel="stylesheet" href="style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+	<script src="http://maps.googleapis.com/maps/api/js"></script>
+	
+	<script src="app.mod.js"></script>
+	<script src="app.ctrl.js"></script>
+	<script src="app.fctr.js"></script>
+	<script src="maps.fctr.js"></script>
+</head>
+<body>
+	<div ng-controller="FlightSearchController as flightSearchCtrl">
+		<div class="page-header">
+			Atostogų medžiotojai
+		</div>
+		<div class="left-side">
+			<div class="form-block">
+				<label>From</label>
+				<input ng-model="flightSearchCtrl.from"/>
+			</div>
+
+			<div class="form-block">
+				<label>To</label>
+				<input ng-model="flightSearchCtrl.to"/>
+			</div>
+
+			<div class="form-block">
+				<label>Date</label>
+				<input type="date" ng-model="flightSearchCtrl.date"/>
+			</div>
+
+			<div class="action-buttons">
+				<button ng-click="flightSearchCtrl.fetchInfo()"> Direct flight </button>
+
+				<button ng-click="flightSearchCtrl.search()"> Find connections </button>
+			</div>
+
+
+			<div class="direct-flight" ng-if="flightSearchCtrl.flightInfo">
+				<div>Skrydis</div>
+				<div>Is: {{flightSearchCtrl.flightInfo.flights[0].outbound.airportFrom.name}} ({{flightSearchCtrl.flightInfo.flights[0].outbound.airportFrom.iataCode}})</div>
+				<div>I: {{flightSearchCtrl.flightInfo.flights[0].outbound.airportTo.name}} ({{flightSearchCtrl.flightInfo.flights[0].outbound.airportTo.iataCode}})</div>
+				<div>Kaina: {{flightSearchCtrl.flightInfo.flights[0].outbound.price.value}} {{flightSearchCtrl.flightInfo.flights[0].outbound.price.currencySymbol}}</div>
+				<div>Isvykimo laikas: {{flightSearchCtrl.flightInfo.flights[0].outbound.dateFrom | date:'yyyy-MM-dd HH:mm'}}</div>
+				<div>Atvykimo laikas: {{flightSearchCtrl.flightInfo.flights[0].outbound.dateTo | date:'yyyy-MM-dd HH:mm'}}</div>
+			</div>
+			<div class="connection-flight-container">
+				<div class="connection-flight" ng-repeat="route in flightSearchCtrl.routes">
+					<div>
+						{{route.route}}
+					</div>
+					<div>
+						{{route.date1}}
+					</div>
+					<div>
+						{{route.price1}}
+					</div>
+					<div>
+						{{route.date2}}
+					</div>
+					<div>
+						{{route.price2}}
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="right-side">
+			<div id="googleMap"></div>
+		</div>
+	</div>
+</body
+</html>

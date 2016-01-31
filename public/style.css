@@ -1,0 +1,125 @@
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+button, html, input, select, textarea {
+    font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+
+body, html {
+    color: rgba(0,0,0,.87);
+    background: #fff;
+    position: relative;
+}
+
+.page-header {
+    color: white;
+    width: 100%;
+    float: left;
+    padding: 20px;
+    font-size: 20px;
+    background-color: #2196F3;
+}
+
+.left-side {
+    width: 50%;
+    float: left;
+    padding: 15px;
+}
+
+.right-side {
+    width: 50%;
+    float: left;
+    padding: 15px;
+}
+
+#googleMap {
+    width: 100%;
+    height: 800px;
+}
+
+.form-block {
+    width: 60%;
+    padding: 10px 15px;
+    float: left;
+}
+
+.form-block label {
+    width: 40%;
+    text-align: right;
+    display: block;
+    float: left;
+    padding: 5px 10px;
+}
+
+.form-block input {
+    width: 60%;
+    display: block;
+    float: right;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.action-buttons {
+    float: left;
+    width: 60%;
+    display: block;
+}
+
+.action-buttons button {
+    float: right;
+    width: 200px;
+
+    font-size: 14px;
+    text-transform: uppercase;
+    text-decoration:none;
+    font-weight: 500;
+
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+    color: rgba(255,255,255,0.87);
+    background-color: rgb(16,108,200);
+    border-radius: 3px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    outline: 0;
+    border: 0;
+    display: inline-block;
+    align-items: center;
+    padding: 0 6px;
+    margin: 6px 8px;
+    line-height: 36px;
+    min-height: 36px;
+    white-space: nowrap;
+    min-width: 88px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.direct-flight {
+    width: 100%;
+    float: left;
+    padding-top: 20px;
+}
+
+.direct-flight div {
+    padding: 5px;
+}
+
+.connection-flight-container {
+    width: 100%;
+    float: left;
+    padding-top: 20px;
+}
+
+.connection-flight {
+    width: 100%;
+    float: left;
+    padding: 5px 15px;
+    border-top: 1px solid #DDD;
+}
