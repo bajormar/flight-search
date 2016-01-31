@@ -35,11 +35,14 @@
     });
 	
 	app.get('*', function(req, res) {
-        res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+        res.sendfile('public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
+	
+	app.set('port', (process.env.PORT || 8080));
 
-    // listen (start app with node server.js) ======================================
-    app.listen(8080);
-    console.log("App listening on port 8080");
+
+	app.listen(app.get('port'), function() {
+	  console.log('Node app is running on port', app.get('port'));
+	});
 	
 	
