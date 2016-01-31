@@ -104,7 +104,7 @@
         }
 
     	function findCityNameByIATACode(iataCode){
-    		return findAirportByIATACode().name;
+    		return findAirportByIATACode(iataCode).name;
     	}
 
     	function findAirportByIATACode(iataCode){
