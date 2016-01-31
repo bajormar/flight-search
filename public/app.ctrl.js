@@ -118,7 +118,7 @@
     	}
 
     	function formatDate(date) {
-    	    return $filter('date')(date, 'yyyy-MM-dd HH:mm', 'UTC')
+    	    return $filter('date')(date, 'yyyy-MM-dd HH:mm')
     	}
     });
 }());

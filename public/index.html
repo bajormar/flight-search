@@ -44,8 +44,8 @@
 				<div>Is: {{flightSearchCtrl.flightInfo.fares[0].outbound.departureAirport.name}} ({{flightSearchCtrl.flightInfo.fares[0].outbound.departureAirport.iataCode}})</div>
 				<div>I: {{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalAirport.name}} ({{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalAirport.iataCode}})</div>
 				<div>Kaina: {{flightSearchCtrl.flightInfo.fares[0].summary.price.value}} {{flightSearchCtrl.flightInfo.fares[0].summary.price.currencySymbol}}</div>
-				<div>Isvykimo laikas: {{flightSearchCtrl.flightInfo.fares[0].outbound.departureDate | date:'yyyy-MM-dd HH:mm'  : 'UTC'}}</div>
-				<div>Atvykimo laikas: {{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalDate | date:'yyyy-MM-dd HH:mm'  : 'UTC'}}</div>
+				<div>Isvykimo laikas: {{flightSearchCtrl.flightInfo.fares[0].outbound.departureDate | date:'yyyy-MM-dd HH:mm'}}</div>
+				<div>Atvykimo laikas: {{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalDate | date:'yyyy-MM-dd HH:mm'}}</div>
 			</div>
 			<div class="connection-flight-container">
 				<div class="connection-flight" ng-repeat="route in flightSearchCtrl.routes">
