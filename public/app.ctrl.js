@@ -4,7 +4,7 @@
       .controller('FlightSearchController', function(FlightSearchFactory, MapsFactory, $filter) {
         var ctrl = this;
 
-    	ctrl.date = new Date(2016, 06, 19);
+    	ctrl.date = new Date(2016, 10, 05);
     	ctrl.minimumHoursBetweenFlights = 2;
     	ctrl.flightInfo;
 
@@ -29,7 +29,7 @@
                     {lat: ctrl.to.coordinates.latitude, lng: ctrl.to.coordinates.longitude}
                 ]);
     		});
-    	}
+    	};
 
     	var airports;
 
@@ -64,7 +64,7 @@
     			        connectedRoutes.push(fromRoute.substring('airport:'.length));
     			    }
     			})
-            })
+            });
 
             angular.forEach(connectedRoutes, function(route) {
 
@@ -92,12 +92,12 @@
                                 addToResultRoutes(route, response1, response3);
                                 return;
                             }
-                        })
+                        });
                         return;
                     })
                 })
             })
-    	}
+    	};
 
     	function addToResultRoutes(route, response1, response2) {
 
@@ -143,6 +143,57 @@
     	function isEnoughTimeBetweenFlights(arrivalDate, departureDate) {
     	    return departureDate - arrivalDate > ctrl.minimumHoursBetweenFlights * 3600000; //hours to miliseconds
     	}
+
+    	ctrl.searchUsingSkyScanner = function() {
+            if(!ctrl.from || !ctrl.to) {
+                return;
+            }
+
+            MapsFactory.clearMap();
+
+            FlightSearchFactory.getFlightPriceInfoSkyScanner(ctrl.from.iataCode, ctrl.to.iataCode, ctrl.date).then(function(response) {
+                ctrl.flightsData = constructFlightsList(response.data);
+            });
+        };
+
+        function constructFlightsList(data) {
+            var list = [];
+
+            for(var i=0; i < data.Itineraries.length; i++) {
+                var item = {};
+                item.company = getCompanyNameByAgentId(data, data.Itineraries[i].PricingOptions[0].Agents[0]);
+                item.price = data.Itineraries[i].PricingOptions[0].Price;
+                var leg = getLeg(data, data.Itineraries[i].OutboundLegId);
+                item.departure = formatDate(leg.Departure);
+                item.arrival = formatDate(leg.Arrival);
+                list.push(item);
+            }
+
+            return list;
+        }
+
+        function getCompanyNameByAgentId(data, agentId) {
+            var companyName = '';
+
+            for(var i=0; i < data.Agents.length; i++) {
+                var agent = data.Agents[i];
+                if(agent.Id === agentId) {
+                    companyName = agent.Name;
+                    break;
+                }
+            }
+
+            return companyName;
+        }
+
+        function getLeg(data, legId) {
+            for(var i=0; i < data.Legs.length; i++) {
+                var leg = data.Legs[i];
+                if(leg.Id === legId) {
+                    return leg;
+                }
+            }
+        }
     });
 }());
 

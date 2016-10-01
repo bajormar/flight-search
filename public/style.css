@@ -10,7 +10,7 @@ button, html, input, select, textarea {
 
 body, html {
     color: rgba(0,0,0,.87);
-    background: #fff;
+    background: #E3F2FD;
     position: relative;
 }
 
@@ -22,22 +22,31 @@ body, html {
 .page-header {
     color: white;
     width: 100%;
-    float: left;
     padding: 20px;
     font-size: 20px;
     background-color: #2196F3;
+}
+
+.page-header-photo {
+    background: url('http://www.hotel-r.net/im/hotel/fr/palm-beach-20.jpg');
+    height: 250px;
+    width: 100%;
+    background-size: cover;
+    background-position: 0 -475px;
 }
 
 .left-side {
     width: 50%;
     float: left;
     padding: 15px;
+    margin-top: -50px;
 }
 
 .right-side {
     width: 50%;
     float: left;
     padding: 15px;
+    margin-top: -50px;
 }
 
 #googleMap {
@@ -46,31 +55,25 @@ body, html {
 }
 
 .form-block {
-    width: 60%;
-    padding: 10px 15px;
-    float: left;
+    padding: 5px 15px;
+    margin: 0 auto;
 }
 
 .form-block label {
-    width: 40%;
-    text-align: right;
     display: block;
-    float: left;
-    padding: 5px 10px;
+    padding: 5px 2px;
 }
 
 .form-block input, .form-block select {
-    width: 60%;
+    width: 200px;
     display: block;
-    float: right;
     padding: 5px;
     border: 1px solid #ccc;
 }
 
 .action-buttons {
-    float: left;
-    width: 60%;
     display: block;
+    margin: 0 auto;
 }
 
 .action-buttons button {
@@ -127,4 +130,22 @@ body, html {
     float: left;
     padding: 5px 15px;
     border-top: 1px solid #DDD;
+}
+
+.flight-item {
+    padding: 5px 15px;
+    margin-bottom: 5px;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.search-block {
+    background-color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    flex-direction: column;
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="flightSearchApp">
 <head>
+	<link rel="stylesheet" href="normalize.css">
 	<link rel="stylesheet" href="style.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
@@ -12,50 +13,56 @@
 	<script src="maps.fctr.js"></script>
 </head>
 <body>
-	<div ng-controller="FlightSearchController as flightSearchCtrl">
+	<div ng-controller="FlightSearchController as $ctrl">
 		<div class="page-header">
 			Atostogų medžiotojai
 		</div>
+		<div class="page-header-photo"></div>
+
 		<div class="left-side">
-			<div class="form-block">
-				<label>From</label>
-				<select name="mySelect" id="mySelect"
-						ng-options="airport.name for airport in flightSearchCtrl.airports track by airport.iataCode"
-						ng-model="flightSearchCtrl.from"></select>
+			<div class="search-block">
+				<div class="form-block">
+					<label>From</label>
+					<select name="mySelect" id="mySelect"
+							ng-options="airport.name for airport in $ctrl.airports track by airport.iataCode"
+							ng-model="$ctrl.from"></select>
+				</div>
+
+				<div class="form-block">
+					<label>To</label>
+					<select name="mySelect" id="mySelect2"
+							ng-options="airport.name for airport in $ctrl.airports track by airport.iataCode"
+							ng-model="$ctrl.to"></select>
+				</div>
+
+				<div class="form-block">
+					<label>Date</label>
+					<input type="date" ng-model="$ctrl.date"/>
+				</div>
+
+				<div class="action-buttons">
+					<button ng-click="$ctrl.fetchInfo()"> Direct flight </button>
+
+					<button ng-click="$ctrl.search()"> Find connections </button>
+
+					<button ng-click="$ctrl.searchUsingSkyScanner()"> Search using SkyScanner</button>
+				</div>
 			</div>
 
-			<div class="form-block">
-				<label>To</label>
-				<select name="mySelect" id="mySelect2"
-						ng-options="airport.name for airport in flightSearchCtrl.airports track by airport.iataCode"
-						ng-model="flightSearchCtrl.to"></select>
-			</div>
 
-			<div class="form-block">
-				<label>Date</label>
-				<input type="date" ng-model="flightSearchCtrl.date"/>
-			</div>
-
-			<div class="action-buttons">
-				<button ng-click="flightSearchCtrl.fetchInfo()"> Direct flight </button>
-
-				<button ng-click="flightSearchCtrl.search()"> Find connections </button>
-			</div>
-
-
-			<div class="direct-flight" ng-if="flightSearchCtrl.flightInfo && !flightSearchCtrl.flightInfo.fares[0]">
+			<div class="direct-flight" ng-if="$ctrl.flightInfo && !$ctrl.flightInfo.fares[0]">
 				Direct flight not available
 			</div>
-			<div class="direct-flight" ng-if="flightSearchCtrl.flightInfo.fares[0]">
+			<div class="direct-flight flight-item" ng-if="$ctrl.flightInfo.fares[0]">
 				<div>Skrydis</div>
-				<div>Is: {{flightSearchCtrl.flightInfo.fares[0].outbound.departureAirport.name}} ({{flightSearchCtrl.flightInfo.fares[0].outbound.departureAirport.iataCode}})</div>
-				<div>I: {{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalAirport.name}} ({{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalAirport.iataCode}})</div>
-				<div>Kaina: {{flightSearchCtrl.flightInfo.fares[0].summary.price.value}} {{flightSearchCtrl.flightInfo.fares[0].summary.price.currencySymbol}}</div>
-				<div>Isvykimo laikas: {{flightSearchCtrl.flightInfo.fares[0].outbound.departureDate | date:'yyyy-MM-dd HH:mm'}}</div>
-				<div>Atvykimo laikas: {{flightSearchCtrl.flightInfo.fares[0].outbound.arrivalDate | date:'yyyy-MM-dd HH:mm'}}</div>
+				<div>Is: {{$ctrl.flightInfo.fares[0].outbound.departureAirport.name}} ({{$ctrl.flightInfo.fares[0].outbound.departureAirport.iataCode}})</div>
+				<div>I: {{$ctrl.flightInfo.fares[0].outbound.arrivalAirport.name}} ({{$ctrl.flightInfo.fares[0].outbound.arrivalAirport.iataCode}})</div>
+				<div>Kaina: {{$ctrl.flightInfo.fares[0].summary.price.value}} {{$ctrl.flightInfo.fares[0].summary.price.currencySymbol}}</div>
+				<div>Isvykimo laikas: {{$ctrl.flightInfo.fares[0].outbound.departureDate | date:'yyyy-MM-dd HH:mm'}}</div>
+				<div>Atvykimo laikas: {{$ctrl.flightInfo.fares[0].outbound.arrivalDate | date:'yyyy-MM-dd HH:mm'}}</div>
 			</div>
 			<div class="connection-flight-container">
-				<div class="connection-flight" ng-repeat="route in flightSearchCtrl.routes">
+				<div class="connection-flight flight-item" ng-repeat="route in $ctrl.routes">
 					<div>
 						{{route.route}}
 					</div>
@@ -71,6 +78,17 @@
 					<div>
 						{{route.price2}}
 					</div>
+				</div>
+			</div>
+			
+			<div ng-if="$ctrl.flightsData" style="clear: both;">
+				<h2>Sky scanner returned info</h2>
+				
+				<div class="flight-item" ng-repeat="flight in $ctrl.flightsData">
+					<div>Company: {{flight.company}}</div>
+					<div>Price: {{flight.price}}</div>
+					<div>Departure: {{flight.departure}}</div>
+					<div>Arrival: {{flight.arrival}}</div>
 				</div>
 			</div>
 

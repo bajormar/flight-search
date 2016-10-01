@@ -6,6 +6,7 @@
     var morgan = require('morgan');             // log requests to the console (express4)
     var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
+    var cheerio = require('cheerio');
 
     // configuration =================
 
@@ -35,7 +36,41 @@
 		})
     });
 
-    https://api.ryanair.com/farefinder/3/oneWayFares?&departureAirportIataCode=VNO&language=lt&limit=5&offset=0&outboundDepartureDateFrom=2016-01-29&outboundDepartureDateTo=2017-03-25
+    app.get('/api/flightsv2/from/:from/to/:to/date/:date', function(req, res) {
+        var request = require('request');
+
+        var options = {
+            url: 'http://partners.api.skyscanner.net/apiservices/pricing/v1.0',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json',
+            },
+            form: {
+                country:'LT',
+                currency:'EUR',
+                locale:'en-GB',
+                apikey:'ba468542315747896697793974776053',
+                grouppricing:true,
+                locationSchema:'Iata',
+                originplace: req.params.from,
+                destinationplace: req.params.to,
+                outbounddate: req.params.date,
+                adults:1,
+                children:0,
+                infants:0
+            }
+        };
+
+        request(options, function (error, response, body) {
+            request(response.headers.location + '?apiKey=ba468542315747896697793974776053', function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    res.send(body);
+                }
+            })
+        });
+    });
+
 
 	app.get('*', function(req, res) {
         res.sendfile('public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
